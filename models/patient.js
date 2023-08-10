@@ -20,22 +20,16 @@ const patientSchema = new mongoose.Schema({
     phone:{
         type:String,
     },
-    appointment:{
-        type:Date,
-    },
-    doctor_name:{
-        type:String,
-    },
     prescription:{
         type:String,
     },
     disease:{
         type:String,
     },
-    doctor:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: 'Doctor'
-    }],
+    // doctor:[{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref: 'Doctor'
+    // }],
 })
 
 const Patient=mongoose.model('Patient',patientSchema,'patients');

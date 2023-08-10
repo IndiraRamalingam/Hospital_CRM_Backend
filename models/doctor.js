@@ -17,10 +17,10 @@ const doctorSchema = new mongoose.Schema({
     fee:{
         type:String,
     },
-    patient:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: 'Patient'
-    }],
+    // patient:[{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref: 'Patient'
+    // }],
 })
 
 const Doctor=mongoose.model('Doctor',doctorSchema,'doctors');

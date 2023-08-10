@@ -6,6 +6,7 @@ const doctorDashboard=require('../controllers/Doctor/doctorDashboard');
 router.post('/signup',doctorAuth.signup)
 router.post('/signin',doctorAuth.signin)
 
-router.get('/view_appointment',doctorDashboard.viewAppointment)
+router.get('/view_patients',doctorDashboard.viewPatients)
+router.put('/prescribe_patients/:id',doctorDashboard.prescribeMedicine)
 
 module.exports=router;

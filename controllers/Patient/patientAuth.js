@@ -1,4 +1,5 @@
 const Patient=require('../../models/patient');
+const Doctor=require('../../models/doctor');
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const config=require('../../utils/config');
@@ -21,6 +22,11 @@ const patientAuth={
             //hash the password befor saving
             const hashedPassword=await bcrypt.hash(password,10);
 
+            //GEtting the list of doctors name
+            const doctorList=await Doctor.find({},{name:1,_id:0}).exec();
+            console.log("DoctorList --- >  "  +doctorList)
+
+
             //create new Patient
             const newPatient = new Patient({
                 name,
@@ -29,6 +35,7 @@ const patientAuth={
                 password:hashedPassword,
                 address,
                 phone,
+                doctor_name:doctorList
                 
             });
 

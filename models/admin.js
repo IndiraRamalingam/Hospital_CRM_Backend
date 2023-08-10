@@ -10,14 +10,6 @@ const adminSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-    },
-    patient:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: 'Patient'
-    },
-    doctor:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref: 'Doctor'
     }
 })
 
