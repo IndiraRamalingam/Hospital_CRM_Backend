@@ -39,11 +39,37 @@ const adminDashboard ={
         }
     },
 
+    
+    //Get Patient By ID
+    getPatientById:async(req,res) =>{
+        try{
+            const token = getTokenFrom(req);
+            console.log("TOOKE  __ > "+token)
+            // decode the token to authorize the user
+            const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
+            console.log("DECODED_NEW  --> "+decodedToken.patientId)
+            // if the token is not valid, return an error
+            if(!decodedToken){
+                return response.json({ message: 'token invalid' });
+                console.log("INVALID TOKEN")
+            }
+            const patient=await Patient.findById(req.params.id).exec();
+            console.log("PatientDetails  --- >"+patient)
+            res.status(200).json({patient})
+            
+        }
+        catch(error){
+            console.error('Error in Fetching Patient By ID',error)
+            res.status(500).json({message:'Error in Fetching Patient By ID'})
+        }
+    },
+
+
     //Add Patient By Admin
     addPatientByAdmin:async(req,res)=>{
         try{
-            const{name,age,email,password,address,phone} = req.body;
-            console.log(name,age,email,password,address,phone)
+            const{name,age,email,password,address,phone,specialist} = req.body;
+            console.log("GGGG   "+name,age,email,password,address,phone,specialist)
             //check if user exists
             const existingPatient= await Patient.findOne({email});
 
@@ -59,10 +85,12 @@ const adminDashboard ={
             const newPatient = new Patient({
                 name,
                 age,
+                
                 email,
                 password:hashedPassword,
                 address,
-                phone,
+                phone,  
+                specialist,  
                 
             });
 
@@ -125,6 +153,24 @@ const adminDashboard ={
             res.status(500).json({message:'Patient Appointment Booking ERROR'})
         }
     },
+ 
+    //getAll DoctorName and Fee
+
+    getAllDoctorName:async(req,res) =>{
+        try{          
+            const alldoctors=await Doctor.find().exec();
+            console.log("AllDoctorDetails --- >"+alldoctors)
+            res.status(200).json({alldoctors})
+        }
+        catch(error)
+        {
+            console.error('Error in Fetching All Doctors Details By Admin',error)
+            res.status(500).json({message:'Error in Fetching All Doctors Details By Admin'})
+        }
+    },
+
+
+
 
     //get all doctors
     getAllDoctorsByAdmin:async(req,res) =>{
@@ -147,6 +193,30 @@ const adminDashboard ={
         {
             console.error('Error in Fetching All Doctors Details By Admin',error)
             res.status(500).json({message:'Error in Fetching All Doctors Details By Admin'})
+        }
+    },
+
+
+    //Get Patient By ID
+    getDoctorById:async(req,res) =>{
+        try{
+            const token = getTokenFrom(req);
+            console.log("TOOKE  __ > "+token)
+            // decode the token to authorize the user
+            const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
+            // if the token is not valid, return an error
+            if(!decodedToken){
+                return response.json({ message: 'token invalid' });
+                console.log("INVALID TOKEN")
+            }
+            const doctor=await Doctor.findById(req.params.id).exec();
+            console.log("DoctorDetails  --- >"+doctor)
+            res.status(200).json({doctor})
+            
+        }
+        catch(error){
+            console.error('Error in Fetching Doctor By ID',error)
+            res.status(500).json({message:'Error in Fetching Doctor By ID'})
         }
     },
 
@@ -175,7 +245,6 @@ const adminDashboard ={
                 fee,
             });
 
-            //save the Admin
             await newDoctor.save();
             res.status(201).json({message:"Doctor created successfully"})
         }

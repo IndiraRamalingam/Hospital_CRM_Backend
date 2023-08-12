@@ -26,6 +26,30 @@ const patientDashboard={
                 console.log("INVALID TOKEN")
             }
             const patient=await Patient.findById(decodedToken.patientId).exec();
+            console.log("PatientDetails ID --- >"+patient._id)
+            const patient_ID=patient._id
+            res.status(200).json({patient_ID})
+            
+        }
+        catch(error){
+            console.error('Error in Fetching Patient ID',error)
+            res.status(500).json({message:'Error in Fetching Patient ID'})
+        }
+    },
+
+    getPatientByID:async(req,res) =>{
+        try{
+            const token = getTokenFrom(req);
+            console.log("TOOKE  __ > "+token)
+            // decode the token to authorize the user
+            const decodedToken = jwt.verify(token, SECRET_KEY_PATIENT);
+            console.log("DECODED_NEW  --> "+decodedToken.patientId)
+            // if the token is not valid, return an error
+            if(!decodedToken){
+                return response.json({ message: 'token invalid' });
+                console.log("INVALID TOKEN")
+            }
+            const patient=await Patient.findById(req.params.id).exec();
             console.log("PatientDetails --- >"+patient)
             res.status(200).json({patient})
             

@@ -8,6 +8,7 @@ router.post('/signup',patientAuth.signup)
 router.post('/signin',patientAuth.signin)
 
 router.get('/',patientDashboard.getPatient)
+router.get('/patientDetails/:id',patientDashboard.getPatientByID)
 //router.put('/book_appointment',patientDashboard.bookAppointment)
 
 module.exports=router;

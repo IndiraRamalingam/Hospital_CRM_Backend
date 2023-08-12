@@ -6,6 +6,9 @@ const patientSchema = new mongoose.Schema({
     age:{
         type:String,
     },
+    gender:{
+        type:String
+    },
     email:{
         type:String,
         required:true,
@@ -26,10 +29,13 @@ const patientSchema = new mongoose.Schema({
     disease:{
         type:String,
     },
-    // doctor:[{
-    //     type:mongoose.Schema.Types.ObjectId,
-    //     ref: 'Doctor'
-    // }],
+    specialist:{
+        type:String,
+    },
+    doctor:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Doctor'
+    }],
 })
 
 const Patient=mongoose.model('Patient',patientSchema,'patients');
