@@ -19,4 +19,7 @@ router.put('/editDoctor/:id',adminDashboard.editDoctorByAdmin)
 router.delete('/deleteDoctor/:id',adminDashboard.deleteDoctorByAdmin)
 router.get('/getAllDoctorName',adminDashboard.getAllDoctorName)
 
+router.get('/getAllContacts',adminDashboard.getAllContacts)
+router.delete('/deleteContact/:id',adminDashboard.deleteContact)
+
 module.exports=router;

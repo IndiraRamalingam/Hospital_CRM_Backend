@@ -21,17 +21,26 @@ const doctorDashboard={
             console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_DOCTOR);
-            console.log("DECODED_NEW  --> "+decodedToken.doctorId)
+            //console.log("DECODED_NEW  --> "+decodedToken.doctorId)
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
                 console.log("INVALID TOKEN")
             }
 
-            //const patientList=await Doctor.findById(decodedToken.doctorId).exec();
+            const doc=await Doctor.findById(decodedToken.doctorId).exec();
+            const docId=doc.id
+            console.log("DDD   "+docId)
+
+            //const patientList=await Patient.find().exec();
             const patientList=await Patient.find().exec();
-            console.log("PatientDetails --- >"+patientList)
-            const patients=patientList
+            patientList.map((m)=>{
+                console.log("MMM   "+m.doctor)
+            })
+            const result=await Patient.find({doctor:{$eq:docId}}).exec();
+            console.log("RESULT   "+result)
+            //console.log("PatientDetails --- >"+patientList)
+            const patients=result
             res.status(200).json({patients})
 
         }

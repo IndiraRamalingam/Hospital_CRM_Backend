@@ -10,7 +10,7 @@ const patientAuth={
     signup:async(req,res)=>{
         try{
             const{name,age,gender,email,password,address,phone,specialist} = req.body;
-            console.log(name,age,gender,email,password,address,phone,doctors)
+            console.log(name,age,gender,email,password,address,phone,specialist)
             //check if user exists
             const existingPatient= await Patient.findOne({email});
 

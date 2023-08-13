@@ -1,6 +1,8 @@
 const Patient=require('../../models/patient');
 const Doctor=require('../../models/doctor');
 const Admin=require('../../models/admin')
+const Contact = require('../../models/contact')
+
 const bcrypt=require('bcrypt');
 const jwt = require("jsonwebtoken");
 const config=require('../../utils/config');
@@ -68,8 +70,18 @@ const adminDashboard ={
     //Add Patient By Admin
     addPatientByAdmin:async(req,res)=>{
         try{
-            const{name,age,email,password,address,phone,specialist} = req.body;
-            console.log("GGGG   "+name,age,email,password,address,phone,specialist)
+            const token = getTokenFrom(req);
+            console.log("TOOKE  __ > "+token)
+            // decode the token to authorize the user
+            const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
+
+            // if the token is not valid, return an error
+            if(!decodedToken){
+                return response.json({ message: 'token invalid' });
+                console.log("INVALID TOKEN")
+            }
+            const{name,age,gender,email,password,address,phone,specialist} = req.body;
+            console.log("GGGG   "+name,age,gender,email,password,address,phone,specialist)
             //check if user exists
             const existingPatient= await Patient.findOne({email});
 
@@ -81,21 +93,25 @@ const adminDashboard ={
             //hash the password befor saving
             const hashedPassword=await bcrypt.hash(password,10);
 
+            const doctor=await Doctor.findOne({specialist});
             //create new Patient
             const newPatient = new Patient({
                 name,
                 age,
-                
+                gender,
                 email,
                 password:hashedPassword,
                 address,
                 phone,  
                 specialist,  
-                
+                doctor:doctor._id,
             });
 
+            const savedPatient=await newPatient.save();
+
+            doctor.patient=doctor.patient.concat(savedPatient._id);
             //save the Patient
-            await newPatient.save();
+            await doctor.save();
             res.status(201).json({message:"Patient created successfully"})
         }
         catch(error)
@@ -103,6 +119,7 @@ const adminDashboard ={
             console.error('Error signing up Patient',error)
             res.status(500).json({message:'Patient SignupError'})
         }
+
     },
 
     //Edit Patient By admin 
@@ -304,6 +321,52 @@ const adminDashboard ={
         }
     },
     
+     //Get all Contacts
+     getAllContacts:async(req,res) =>{
+        try{
+            const token = getTokenFrom(req);
+            console.log("TOOKE  __ > "+token)
+            // decode the token to authorize the user
+            const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
+            // console.log("DECODED_NEW  --> "+decodedToken.doctorId)
+            // if the token is not valid, return an error
+            if(!decodedToken){
+                return response.json({ message: 'token invalid' });
+                console.log("INVALID TOKEN")
+            }
+            const allcontact=await Contact.find().exec();
+            console.log("AllContactDetails --- >"+allcontact)
+            res.status(200).json({allcontact})
+        }
+        catch(error)
+        {
+            console.error('Error in Fetching All Contact Details By Admin',error)
+            res.status(500).json({message:'Error in Fetching All Contacts Details By Admin'})
+        }
+    },
+
+     //Delete Contact By Admin
+     deleteContact:async(req,res)=>{
+        try{
+            const token = getTokenFrom(req);
+            console.log("TOKEN  __ > "+token)
+            // decode the token to authorize the user
+            const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
+            // if the token is not valid, return an error
+            if(!decodedToken){
+                return response.json({ message: 'token invalid' });
+                console.log("INVALID TOKEN")
+            }
+            const contact=await Contact.findByIdAndDelete(req.params.id).exec();
+            console.log("Deleted")
+            res.status(200).json({message:"Deleted Successfully"})
+        }
+        catch(error)
+        {
+            console.error('Error in deleting Doctor',error)
+            res.status(500).json({message:'Error in deleting Doctor'})
+        }
+    },
 }
 
 module.exports=adminDashboard
