@@ -9,6 +9,6 @@ router.post('/signin',patientAuth.signin)
 
 router.get('/',patientDashboard.getPatient)
 router.get('/patientDetails/:id',patientDashboard.getPatientByID)
-//router.put('/book_appointment',patientDashboard.bookAppointment)
+router.put('/book_appointment/:id',patientDashboard.bookAppointment)
 
 module.exports=router;

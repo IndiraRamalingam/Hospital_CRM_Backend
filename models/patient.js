@@ -23,15 +23,22 @@ const patientSchema = new mongoose.Schema({
     phone:{
         type:String,
     },
-    prescription:{
+    prescription:[{
         type:String,
-    },
-    disease:{
+    }],
+    disease:[{
         type:String,
-    },
-    specialist:{
+    }],
+    specialist:[{
         type:String,
-    },
+    }],
+    time:[{
+        type:String,
+    }],
+    date:[{
+        type:Date,
+    }],
+
     doctor:[{
         type:mongoose.Schema.Types.ObjectId,
         ref: 'Doctor'

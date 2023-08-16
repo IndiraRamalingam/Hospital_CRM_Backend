@@ -9,8 +9,8 @@ const SECRET_KEY_PATIENT=config.SECRET_KEY_PATIENT;
 const patientAuth={
     signup:async(req,res)=>{
         try{
-            const{name,age,gender,email,password,address,phone,specialist} = req.body;
-            console.log(name,age,gender,email,password,address,phone,specialist)
+            const{name,age,gender,email,password,address,phone} = req.body;
+            console.log(name,age,gender,email,password,address,phone)
             //check if user exists
             const existingPatient= await Patient.findOne({email});
 
@@ -35,8 +35,7 @@ const patientAuth={
                 email,
                 password:hashedPassword,
                 address,
-                phone,  
-                specialist,             
+                phone,            
             });
 
             //save the Patient

@@ -110,7 +110,7 @@ const adminDashboard ={
             const savedPatient=await newPatient.save();
 
             doctor.patient=doctor.patient.concat(savedPatient._id);
-            //save the Patient
+            
             await doctor.save();
             res.status(201).json({message:"Patient created successfully"})
         }

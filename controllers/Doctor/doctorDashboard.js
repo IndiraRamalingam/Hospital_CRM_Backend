@@ -14,6 +14,33 @@ const getTokenFrom = (request) => {
 
 const doctorDashboard={
 
+    //getDoctorID
+
+    getDoctorID:async(req,res) =>{
+        try{
+            const token = getTokenFrom(req);
+            console.log("TOOKE  __ > "+token)
+            // decode the token to authorize the user
+            const decodedToken = jwt.verify(token, SECRET_KEY_DOCTOR);
+            // if the token is not valid, return an error
+            if(!decodedToken){
+                return response.json({ message: 'token invalid' });
+                console.log("INVALID TOKEN")
+            }
+            const doctor=await Doctor.findById(decodedToken.doctorId).exec();
+            
+            const doctor_ID=doctor._id
+            const name=doctor.name
+            res.status(200).json({doctor_ID,name})
+            
+        }
+        catch(error){
+            console.error('Error in Fetching Doctor ID',error)
+            res.status(500).json({message:'Error in Fetching Doctor ID'})
+        }
+    },
+
+
     //View all patients
     viewPatients:async(req,res)=>{
         try{
@@ -64,11 +91,13 @@ const doctorDashboard={
                 return response.json({ message: 'token invalid' });
                 console.log("INVALID TOKEN")
             }
-
-            const prescribe=await Patient.findById(req.params.id).exec();
-            prescribe.set(req.body);
-            const result=await prescribe.save();
-            res.status(200).json({result})
+            const{disease,prescription}=req.body;
+            const patient=await Patient.findById(req.params.id).exec();
+            patient.prescription=patient.prescription.concat(prescription);
+            patient.disease=patient.disease.concat(disease);
+            //prescribe.set(req.body);
+            const result=await patient.save();
+            res.status(200).json({patient})
 
         }
         catch(error)
