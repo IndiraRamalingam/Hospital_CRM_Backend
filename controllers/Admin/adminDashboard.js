@@ -9,6 +9,7 @@ const config=require('../../utils/config');
 const { request } = require('express');
 
 const SECRET_KEY_ADMIN=config.SECRET_KEY_ADMIN;
+const MONGO_URI=config.MONGO_URI;
 
 const getTokenFrom = (request) => {
     const authHeader = request.header('Authorization');
@@ -32,7 +33,11 @@ const adminDashboard ={
             }
             const allpatient=await Patient.find().exec();
             console.log("AllPatientDetails --- >"+allpatient)
-            res.status(200).json({allpatient})
+
+            const countOfPatients=await Patient.find().count();
+            console.log("COUNT OF PATIENTS ----->  " +countOfPatients)
+
+            res.status(200).json({allpatient,countOfPatients})
         }
         catch(error)
         {
@@ -174,7 +179,11 @@ const adminDashboard ={
         try{          
             const alldoctors=await Doctor.find().exec();
             console.log("AllDoctorDetails --- >"+alldoctors)
-            res.status(200).json({alldoctors})
+
+            const countOfDoctors=await Doctor.find().count();
+            console.log("COUNT OF DOCTORS ----->  " +countOfDoctors)
+
+            res.status(200).json({alldoctors,countOfDoctors})
         }
         catch(error)
         {
@@ -201,7 +210,16 @@ const adminDashboard ={
             }
             const alldoctors=await Doctor.find().exec();
             console.log("AllDoctorDetails --- >"+alldoctors)
-            res.status(200).json({alldoctors})
+
+
+            const countOfgeneral=await Doctor.find({specialist:{$eq:'General Physician'}}).count();
+            const countOfPaediatrician=await Doctor.find({specialist:{$eq:'Paediatrician'}}).count();
+            const countOfGynecologist=await Doctor.find({specialist:{$eq:'Gynecologist'}}).count();
+            const countOfPhysiotherapist=await Doctor.find({specialist:{$eq:'Physiotherapist'}}).count();
+            const countOfDiabetologist=await Doctor.find({specialist:{$eq:'Diabetologist'}}).count();
+            const countOfGastroenterologist=await Doctor.find({specialist:{$eq:'Gastroenterologist'}}).count();
+
+            res.status(200).json({alldoctors,countOfgeneral,countOfPaediatrician,countOfGynecologist,countOfPhysiotherapist,countOfDiabetologist,countOfGastroenterologist})
         }
         catch(error)
         {
@@ -333,7 +351,11 @@ const adminDashboard ={
             }
             const allcontact=await Contact.find().exec();
             console.log("AllContactDetails --- >"+allcontact)
-            res.status(200).json({allcontact})
+
+            const countOfContacts=await Contact.find().count();
+            console.log("COUNT OF QUERIES ----->  " +countOfContacts)
+
+            res.status(200).json({allcontact,countOfContacts})
         }
         catch(error)
         {
