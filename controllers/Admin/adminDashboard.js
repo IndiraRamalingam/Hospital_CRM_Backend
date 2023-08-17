@@ -80,8 +80,8 @@ const adminDashboard ={
                 return response.json({ message: 'token invalid' });
                 console.log("INVALID TOKEN")
             }
-            const{name,age,gender,email,password,address,phone,specialist} = req.body;
-            console.log("GGGG   "+name,age,gender,email,password,address,phone,specialist)
+            const{name,age,gender,email,password,address,phone} = req.body;
+            console.log("GGGG   "+name,age,gender,email,password,address,phone)
             //check if user exists
             const existingPatient= await Patient.findOne({email});
 
@@ -93,7 +93,6 @@ const adminDashboard ={
             //hash the password befor saving
             const hashedPassword=await bcrypt.hash(password,10);
 
-            const doctor=await Doctor.findOne({specialist});
             //create new Patient
             const newPatient = new Patient({
                 name,
@@ -103,21 +102,19 @@ const adminDashboard ={
                 password:hashedPassword,
                 address,
                 phone,  
-                specialist,  
-                doctor:doctor._id,
             });
 
-            const savedPatient=await newPatient.save();
+            await newPatient.save();
 
-            doctor.patient=doctor.patient.concat(savedPatient._id);
+            // doctor.patient=doctor.patient.concat(savedPatient._id);
             
-            await doctor.save();
-            res.status(201).json({message:"Patient created successfully"})
+            // await doctor.save();
+            res.status(201).json({message:"Patient added successfully"})
         }
         catch(error)
         {
-            console.error('Error signing up Patient',error)
-            res.status(500).json({message:'Patient SignupError'})
+            console.error('Error creating Patient',error)
+            res.status(500).json({message:'Patient Creating Error'})
         }
 
     },
@@ -143,8 +140,8 @@ const adminDashboard ={
             }
             catch(error)
             {
-                console.error('ERROR in adding Patient By Admin',error)
-                res.status(500).json({message:'ERROR in adding Patient By Admin'})
+                console.error('ERROR in editing Patient By Admin',error)
+                res.status(500).json({message:'ERROR in editing Patient By Admin'})
             }
     },
 
