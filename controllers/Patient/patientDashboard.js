@@ -74,12 +74,14 @@ const patientDashboard={
                 return response.json({ message: 'token invalid' });
                 console.log("INVALID TOKEN")
             }
-            const{specialist,date,time}=req.body; 
-            var doctor=await Doctor.findOne({specialist});
+            const{doctorname,date,time}=req.body; 
+            const doctname=doctorname
+            console.log("DOCTOR ---> "+doctname)
+            var doctor=await Doctor.findOne({name:{$eq:doctorname}});
               
 
            const patient=await Patient.findByIdAndUpdate(req.params.id).exec();            
-           patient.specialist=patient.specialist.concat(specialist)
+           patient.doctorname=patient.doctorname.concat(doctorname)
            patient.date=patient.date.concat(date)
            patient.time=patient.time.concat(time)
             patient.doctor=patient.doctor.concat(doctor._id)
@@ -90,6 +92,7 @@ const patientDashboard={
             
                                                         
             console.log(result)
+            console.log("BOOKING SUCESS")
             res.status(200).json({result})
         }
         catch(error)

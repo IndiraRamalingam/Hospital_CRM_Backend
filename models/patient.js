@@ -38,7 +38,9 @@ const patientSchema = new mongoose.Schema({
     date:[{
         type:Date,
     }],
-
+    doctorname:[{
+        type:String
+    }],
     doctor:[{
         type:mongoose.Schema.Types.ObjectId,
         ref: 'Doctor'

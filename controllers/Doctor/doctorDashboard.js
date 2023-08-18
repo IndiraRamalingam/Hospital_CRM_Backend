@@ -89,14 +89,16 @@ const doctorDashboard={
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const{disease,prescription}=req.body;
             const patient=await Patient.findById(req.params.id).exec();
             patient.prescription=patient.prescription.concat(prescription);
             patient.disease=patient.disease.concat(disease);
-            //prescribe.set(req.body);
             const result=await patient.save();
+            
+            //const removeResult=await Patient.findByIdAndRemove(req.params.id)
+            //console.log("ID--->"+removeResult)
+            
             res.status(200).json({patient})
 
         }
