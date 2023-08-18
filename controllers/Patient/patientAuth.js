@@ -10,7 +10,6 @@ const patientAuth={
     signup:async(req,res)=>{
         try{
             const{name,age,gender,email,password,address,phone} = req.body;
-            console.log(name,age,gender,email,password,address,phone)
             //check if user exists
             const existingPatient= await Patient.findOne({email});
 
@@ -21,11 +20,6 @@ const patientAuth={
 
             //hash the password befor saving
             const hashedPassword=await bcrypt.hash(password,10);
-
-            // //GEtting the list of doctors name
-            // const doctorList=await Doctor.find({},{name:1,_id:0}).exec();
-            // console.log("DoctorList --- >  "  +doctorList)
-
 
             //create new Patient
             const newPatient = new Patient({

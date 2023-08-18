@@ -9,7 +9,7 @@ const adminAuth={
     signup:async(req,res)=>{
         try{
             const{name,email,password} = req.body;
-            console.log(name,email,password)
+
             //check if user exists
             const existingAdmin= await Admin.findOne({email});
 
@@ -34,7 +34,6 @@ const adminAuth={
         }
         catch(error)
         {
-            console.error('Error signing up Admin',error)
             res.status(500).json({message:'Admin SignupError'})
         }
     },
@@ -61,11 +60,11 @@ const adminAuth={
             //generate and send the jwt token 
             const token=jwt.sign({adminId:admin._id},SECRET_KEY_ADMIN,{expiresIn:'1h'});
             res.json({token});
-        }
-        catch(error){
-            console.log('Error signing in Admin', error);
-            res.status(500).json({message: 'Internal Server error'});
-        }
+            }
+            catch(error){
+                console.log('Error signing in Admin', error);
+                res.status(500).json({message: 'Internal Server error'});
+            }
     }
 }
 

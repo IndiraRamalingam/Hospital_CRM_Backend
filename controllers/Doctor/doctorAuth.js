@@ -9,7 +9,6 @@ const doctorAuth={
     signup:async(req,res)=>{
         try{
             const{name,email,password,specialist,fee} = req.body;
-            console.log(name,email,password,specialist,fee)
             //check if user exists
             const existingDoctor= await Doctor.findOne({email});
 

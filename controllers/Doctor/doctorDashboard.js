@@ -8,24 +8,20 @@ const SECRET_KEY_DOCTOR=config.SECRET_KEY_DOCTOR;
 
 const getTokenFrom = (request) => {
     const authHeader = request.header('Authorization');
-    //const authHeader = request.get('Authorization');
     return authHeader;
 }
 
 const doctorDashboard={
 
     //getDoctorID
-
     getDoctorID:async(req,res) =>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_DOCTOR);
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const doctor=await Doctor.findById(decodedToken.doctorId).exec();
             
@@ -45,28 +41,20 @@ const doctorDashboard={
     viewPatients:async(req,res)=>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_DOCTOR);
-            //console.log("DECODED_NEW  --> "+decodedToken.doctorId)
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
 
             const doc=await Doctor.findById(decodedToken.doctorId).exec();
             const docId=doc.id
-            console.log("DDD   "+docId)
 
-            //const patientList=await Patient.find().exec();
             const patientList=await Patient.find().exec();
-            patientList.map((m)=>{
-                console.log("MMM   "+m.doctor)
-            })
+  
             const result=await Patient.find({doctor:{$eq:docId}}).exec();
-            console.log("RESULT   "+result)
-            //console.log("PatientDetails --- >"+patientList)
+
             const patients=result
             res.status(200).json({patients})
 
@@ -82,10 +70,9 @@ const doctorDashboard={
     prescribeMedicine:async(req,res) =>{
         try{
         const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_DOCTOR);
-            console.log("DECODED_NEW  --> "+decodedToken.doctorId)
+
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
@@ -95,9 +82,6 @@ const doctorDashboard={
             patient.prescription=patient.prescription.concat(prescription);
             patient.disease=patient.disease.concat(disease);
             const result=await patient.save();
-            
-            //const removeResult=await Patient.findByIdAndRemove(req.params.id)
-            //console.log("ID--->"+removeResult)
             
             res.status(200).json({patient})
 
@@ -113,19 +97,16 @@ const doctorDashboard={
     getPatientById:async(req,res) =>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
+            
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_DOCTOR);
-            console.log("DECODED_NEW  --> "+decodedToken.patientId)
+            
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const patient=await Patient.findById(req.params.id).exec();
-            console.log("PatientDetails  --- >"+patient)
             res.status(200).json({patient})
-            
         }
         catch(error){
             console.error('Error in Fetching Patient By ID',error)
@@ -137,16 +118,13 @@ const doctorDashboard={
     deletePatientByDoctor:async(req,res)=>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOKEN  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_DOCTOR);
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const patient=await Patient.findByIdAndDelete(req.params.id).exec();
-            console.log("Deleted")
             res.status(200).json({message:"Deleted Successfully"})
         }
         catch(error)

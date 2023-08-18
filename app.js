@@ -17,5 +17,3 @@ app.use('/api/doctor',doctorRoutes);
 app.use('/api/patient',patientRoutes);
 
 module.exports =app;
-
-//http://localhost:3001/api/admin/signup

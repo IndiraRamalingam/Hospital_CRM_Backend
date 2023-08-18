@@ -1,7 +1,6 @@
 const Contact = require('../models/contact')
 const config=require('../utils/config')
 
-
 const contactController={
     contactControl:async(req,res)=>{
         try{

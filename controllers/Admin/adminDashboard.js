@@ -9,11 +9,9 @@ const config=require('../../utils/config');
 const { request } = require('express');
 
 const SECRET_KEY_ADMIN=config.SECRET_KEY_ADMIN;
-const MONGO_URI=config.MONGO_URI;
 
 const getTokenFrom = (request) => {
     const authHeader = request.header('Authorization');
-    //const authHeader = request.get('Authorization');
     return authHeader;
 }
 
@@ -22,20 +20,15 @@ const adminDashboard ={
     getAllPatientsByAdmin:async(req,res) =>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
-            // console.log("DECODED_NEW  --> "+decodedToken.doctorId)
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const allpatient=await Patient.find().exec();
-            console.log("AllPatientDetails --- >"+allpatient)
 
             const countOfPatients=await Patient.find().count();
-            console.log("COUNT OF PATIENTS ----->  " +countOfPatients)
 
             res.status(200).json({allpatient,countOfPatients})
         }
@@ -45,25 +38,19 @@ const adminDashboard ={
             res.status(500).json({message:'Error in Fetching All Patients Details By Admin'})
         }
     },
-
     
     //Get Patient By ID
     getPatientById:async(req,res) =>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
-            console.log("DECODED_NEW  --> "+decodedToken.patientId)
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const patient=await Patient.findById(req.params.id).exec();
-            console.log("PatientDetails  --- >"+patient)
             res.status(200).json({patient})
-            
         }
         catch(error){
             console.error('Error in Fetching Patient By ID',error)
@@ -71,22 +58,19 @@ const adminDashboard ={
         }
     },
 
-
     //Add Patient By Admin
     addPatientByAdmin:async(req,res)=>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
 
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const{name,age,gender,email,password,address,phone} = req.body;
-            console.log("GGGG   "+name,age,gender,email,password,address,phone)
+
             //check if user exists
             const existingPatient= await Patient.findOne({email});
 
@@ -111,9 +95,6 @@ const adminDashboard ={
 
             await newPatient.save();
 
-            // doctor.patient=doctor.patient.concat(savedPatient._id);
-            
-            // await doctor.save();
             res.status(201).json({message:"Patient added successfully"})
         }
         catch(error)
@@ -121,26 +102,22 @@ const adminDashboard ={
             console.error('Error creating Patient',error)
             res.status(500).json({message:'Patient Creating Error'})
         }
-
     },
 
     //Edit Patient By admin 
     editPatientByAdmin: async(req,res)=>{
             try{
                 const token = getTokenFrom(req);
-                console.log("TOKEN  __ > "+token)
                 // decode the token to authorize the user
                 const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
                 // if the token is not valid, return an error
                 if(!decodedToken){
                     return response.json({ message: 'token invalid' });
-                    console.log("INVALID TOKEN")
                 }
                 const patient=await Patient.findByIdAndUpdate(req.params.id).exec();
                 
                 patient.set(req.body)
                 const result=await patient.save();
-                console.log(result)
                 res.status(200).json({result})
             }
             catch(error)
@@ -154,16 +131,13 @@ const adminDashboard ={
     deletePatientByAdmin:async(req,res)=>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOKEN  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const patient=await Patient.findByIdAndDelete(req.params.id).exec();
-            console.log("Deleted")
             res.status(200).json({message:"Deleted Successfully"})
         }
         catch(error)
@@ -178,10 +152,8 @@ const adminDashboard ={
     getAllDoctorName:async(req,res) =>{
         try{          
             const alldoctors=await Doctor.find().exec();
-            console.log("AllDoctorDetails --- >"+alldoctors)
 
             const countOfDoctors=await Doctor.find().count();
-            console.log("COUNT OF DOCTORS ----->  " +countOfDoctors)
 
             res.status(200).json({alldoctors,countOfDoctors})
         }
@@ -192,25 +164,17 @@ const adminDashboard ={
         }
     },
 
-
-
-
     //get all doctors
     getAllDoctorsByAdmin:async(req,res) =>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
-            // console.log("DECODED_NEW  --> "+decodedToken.doctorId)
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const alldoctors=await Doctor.find().exec();
-            console.log("AllDoctorDetails --- >"+alldoctors)
-
 
             const countOfgeneral=await Doctor.find({specialist:{$eq:'General Physician'}}).count();
             const countOfPaediatrician=await Doctor.find({specialist:{$eq:'Paediatrician'}}).count();
@@ -232,17 +196,14 @@ const adminDashboard ={
     //Get Patient By ID
     getDoctorById:async(req,res) =>{
         try{
-            const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
+            const token = getTokenFrom(req);        
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const doctor=await Doctor.findById(req.params.id).exec();
-            console.log("DoctorDetails  --- >"+doctor)
             res.status(200).json({doctor})
             
         }
@@ -256,7 +217,6 @@ const adminDashboard ={
     addDoctorByAdmin:async(req,res)=>{
         try{
             const{name,email,password,specialist,fee} = req.body;
-            console.log(name,email,password,specialist,fee)
             //check if user exists
             const existingDoctor= await Doctor.findOne({email});
 
@@ -291,19 +251,16 @@ const adminDashboard ={
     editDoctorByAdmin: async(req,res)=>{
             try{
                 const token = getTokenFrom(req);
-                console.log("TOKEN  __ > "+token)
                 // decode the token to authorize the user
                 const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
                 // if the token is not valid, return an error
                 if(!decodedToken){
                     return response.json({ message: 'token invalid' });
-                    console.log("INVALID TOKEN")
                 }
                 const doctor=await Doctor.findByIdAndUpdate(req.params.id).exec();
                 
                 doctor.set(req.body)
                 const result=await doctor.save();
-                console.log(result)
                 res.status(200).json({result})
             }
             catch(error)
@@ -317,16 +274,13 @@ const adminDashboard ={
     deleteDoctorByAdmin:async(req,res)=>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOKEN  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const doctor=await Doctor.findByIdAndDelete(req.params.id).exec();
-            console.log("Deleted")
             res.status(200).json({message:"Deleted Successfully"})
         }
         catch(error)
@@ -340,20 +294,15 @@ const adminDashboard ={
      getAllContacts:async(req,res) =>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOOKE  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
-            // console.log("DECODED_NEW  --> "+decodedToken.doctorId)
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const allcontact=await Contact.find().exec();
-            console.log("AllContactDetails --- >"+allcontact)
 
             const countOfContacts=await Contact.find().count();
-            console.log("COUNT OF QUERIES ----->  " +countOfContacts)
 
             res.status(200).json({allcontact,countOfContacts})
         }
@@ -368,16 +317,13 @@ const adminDashboard ={
      deleteContact:async(req,res)=>{
         try{
             const token = getTokenFrom(req);
-            console.log("TOKEN  __ > "+token)
             // decode the token to authorize the user
             const decodedToken = jwt.verify(token, SECRET_KEY_ADMIN);
             // if the token is not valid, return an error
             if(!decodedToken){
                 return response.json({ message: 'token invalid' });
-                console.log("INVALID TOKEN")
             }
             const contact=await Contact.findByIdAndDelete(req.params.id).exec();
-            console.log("Deleted")
             res.status(200).json({message:"Deleted Successfully"})
         }
         catch(error)
